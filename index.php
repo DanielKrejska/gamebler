@@ -7,5 +7,9 @@
 </head>
 <body>
     <h1>Hello Gambler!</h1>
+    <?php
+        header("Location: login.php");
+    exit;
+    ?>
 </body>
 </html>
