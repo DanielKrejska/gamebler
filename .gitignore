@@ -1,0 +1,26 @@
+# ignores modeules and folders everywhere
+node_modules/
+build/
+dist/
+
+# Logs
+*.log
+
+# Environment variables
+*.env
+
+# Test coverage
+coverage/
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# specific for 'my-app' subfolder
+casino-app/node_modules/
+casino-app/build/
+casino-app/.env
