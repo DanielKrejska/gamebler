@@ -180,6 +180,33 @@ app.post("/upload-profile-image", authenticateToken, upload.single("profileImage
     });
 });
 
+// get cash
+app.post("/add-balance", authenticateToken, (req, res) => {
+    const { login } = req.user;
+
+    const query = "UPDATE account SET balance = balance + 100 WHERE login = ?";
+    connection.query(query, [login], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error." });
+        }
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        const getUpdatedBalanceQuery = "SELECT balance FROM account WHERE login = ?";
+        connection.query(getUpdatedBalanceQuery, [login], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Server error while fetching balance." });
+            }
+
+            res.json({ balance: results[0].balance });
+        });
+    });
+});
+
 ////////
 //////// LISTEN
 ////////

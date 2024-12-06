@@ -39,6 +39,32 @@ function Home() {
         fetchHomeData();
     }, [navigate]);
 
+    const handleAddBalance = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch("http://localhost:5001/add-balance", {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                alert("Error adding balance.");
+                return;
+            }
+    
+            const data = await response.json();
+            setAccount((prevAccount) => ({
+                ...prevAccount,
+                balance: data.balance,
+            }));
+            alert("$100 added to your balance!");
+        }
+        catch (error) {
+            console.error("Error adding balance:", error);
+        }
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
@@ -92,6 +118,7 @@ function Home() {
                 <button onClick={handleUpload}>Upload Profile Image</button>
             </div>
             
+            <button onClick={handleAddBalance}>Add $100</button>
             <button onClick={handleLogout}>Logout</button>
         </div>
     );
