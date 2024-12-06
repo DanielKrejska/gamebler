@@ -78,6 +78,15 @@ input {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.profile-info {
+  padding: 12px;
+  margin: 8px 0;
+  border: 4px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #282c34;
+}
+
 h2 {
   text-align: center;
   color: #333;
@@ -145,4 +154,10 @@ img {
 
 .logout-button:hover {
   background-color: #e53935;
+}
+
+.upload-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

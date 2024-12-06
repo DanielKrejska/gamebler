@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const path = require("path");
+const multer = require('multer');
 
 const SECRET_KEY = "my_secret_key"; // strong key for production
 
@@ -18,6 +19,17 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'images'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage });
 
 // connect DB and create table
 const connection = mysql.createConnection({
@@ -146,6 +158,27 @@ app.get("/home", authenticateToken, (req, res) => {
     });
 });
 
+// upload profile pick
+app.post("/upload-profile-image", authenticateToken, upload.single("profileImage"), (req, res) => {
+    const { login } = req.user;
+    const profileImage = req.file ? req.file.filename : null;
+
+    if (!profileImage) {
+        return res.status(400).json({ message: "No file uploaded." });
+    }
+
+    const query = "UPDATE account SET profile_image = ? WHERE login = ?";
+    connection.query(query, [profileImage, login], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error." });
+        }
+
+        res.json({
+            profileImage: `/images/${profileImage}`
+        });
+    });
+});
 
 ////////
 //////// LISTEN
