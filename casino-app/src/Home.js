@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-    const [message, setMessage] = useState("");
+    const [account, setAccount] = useState();
+    const [profileImage, setProfileImage] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +28,8 @@ function Home() {
                 }
                 else {
                     const data = await response.json();
-                    setMessage(data.message);
+                    setAccount(data.account);
+                    setProfileImage(`http://localhost:5001${data.account.profileImage}`);
                 }
             } catch (error) {
                 console.error("Error fetching home data:", error);
@@ -45,7 +47,8 @@ function Home() {
     return (
         <div>
             <h1>Home</h1>
-            {message && <p>{message}</p>}
+            <img src={profileImage} alt="Profile" width="150" height="150" />
+            {account && <p>Hello, {account.login}, your balance is {account.balance}.</p>}
             <button onClick={handleLogout}>Logout</button>
         </div>
     );

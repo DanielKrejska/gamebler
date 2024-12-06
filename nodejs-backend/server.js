@@ -3,10 +3,14 @@ const mysql = require("mysql2");
 const bcrypt = require('bcryptjs');
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const SECRET_KEY = "my_secret_key"; // strong key for production
 
 const app = express();
+
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use(cors({
     origin: "http://localhost:3000", // front end addres
     methods: ["GET", "POST", "PUT", "DELETE"], // allow http
@@ -26,9 +30,10 @@ const connection = mysql.createConnection({
 function createTableIfNotExists() {
     const createTableQuery = `
         CREATE TABLE IF NOT EXISTS account (
-        login VARCHAR(255) PRIMARY KEY,
-        password VARCHAR(255) NOT NULL,
-        balance DECIMAL(10, 2) NOT NULL DEFAULT 0
+            login VARCHAR(255) PRIMARY KEY,
+            password VARCHAR(255) NOT NULL,
+            balance DECIMAL(10, 2) NOT NULL DEFAULT 0,
+            profile_image VARCHAR(255) NOT NULL
         );
     `;
 
@@ -69,8 +74,8 @@ app.post("/register", (req, res) => {
 
   const saltRounds = 10;
   const hashedPassword = bcrypt.hashSync(password, saltRounds);
-  const query = "INSERT INTO account (login, password, balance) VALUES (?, ?, ?)";
-  connection.query(query, [login, hashedPassword, 0], (err, results) => {
+  const query = "INSERT INTO account (login, password, balance, profile_image) VALUES (?, ?, ?, ?)";
+  connection.query(query, [login, hashedPassword, 0, "default.jpg"], (err, results) => {
     if (err) {
       if (err.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ message: "User already exists." });
@@ -117,7 +122,28 @@ app.post("/login", (req, res) => {
 
 // Homepage
 app.get("/home", authenticateToken, (req, res) => {
-    res.json({ message: `Welcome to your home, ${req.user.login}!`, user: req.user });
+    const { login } = req.user;
+
+    const query = "SELECT login, balance, profile_image FROM account WHERE login = ?";
+    connection.query(query, [login], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error." });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        const account = results[0];
+        return res.json({
+            account: {
+                login: account.login,
+                balance: account.balance,
+                profileImage: `/images/${account.profile_image}`
+            }
+        });
+    });
 });
 
 

@@ -22,7 +22,7 @@ function Login() {
 
             if (response.ok) {
                 localStorage.setItem("token", data.token);
-                navigate("/home"); // Přesměrování na domovskou stránku
+                navigate("/home");
             }
         } catch (error) {
             console.error("Error:", error);
