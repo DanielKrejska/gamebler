@@ -45,7 +45,7 @@ function Home() {
     }
 
     return (
-        <div>
+        <div className="container home-content">
             <h1>Home</h1>
             <img src={profileImage} alt="Profile" width="150" height="150" />
             {account && <p>Hello, {account.login}, your balance is {account.balance}.</p>}
