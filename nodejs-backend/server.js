@@ -95,7 +95,8 @@ app.post("/register", (req, res) => {
       console.error(err);
       return res.status(500).json({ message: "Server error." });
     }
-    res.status(201).json({ message: "User registered successfully." });
+    res.status(201).json({ message: "User registered successfully. Redirecting to login.",
+    redirect: "/login" });
   });
 });
 
@@ -129,6 +130,10 @@ app.post("/login", (req, res) => {
         });
 
         res.json({ token, message: "Login successful." });
+
+        <button onClick={() => navigate('/register')}>
+        Not Registered? Register Here
+        </button>
     });
 });
 

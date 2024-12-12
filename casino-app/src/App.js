@@ -11,20 +11,14 @@ function App() {
             <Routes>
                 <Route path="/" element={<Navigate to="/home" />} />
                 <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                <Route path="/login" element={<LoginAndRegister />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
         </Router>
     );
 }
 
-function LoginAndRegister() {
-    return (
-        <div>
-            <Login />
-            <Register />
-        </div>
-    );
-}
+
 
 function ProtectedRoute({ children }) {
     const token = localStorage.getItem("token");

@@ -5,6 +5,8 @@ function Register() {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
 
+
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
@@ -30,7 +32,7 @@ function Register() {
     };
 
     return (
-        <div className="container">
+        <div className="page-container">
             <form onSubmit={handleRegister}>
                 <h2>Register</h2>
                 <input
@@ -54,4 +56,6 @@ function Register() {
     );
 }
 
+
 export default Register;
+

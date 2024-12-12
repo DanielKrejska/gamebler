@@ -7,6 +7,7 @@ function Login() {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -31,7 +32,7 @@ function Login() {
     };
 
     return (
-        <div className="container">
+        <div className="page-container">
             <form onSubmit={handleLogin}>
                 <h2>Login</h2>
                 <input
@@ -50,9 +51,14 @@ function Login() {
                 />
                 <button type="submit">Login</button>
                 {message && <p>{message}</p>}
+                <button onClick={() => navigate('/register')}>  
+
+                Not Registered? Register Here
+                </button>
             </form>
         </div>
     );
 }
+
 
 export default Login;
