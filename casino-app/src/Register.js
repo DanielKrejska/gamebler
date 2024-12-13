@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
-
-
+    const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -51,6 +51,9 @@ function Register() {
                 />
                 <button type="submit">Register</button>
                 {message && <p>{message}</p>}
+                <button onClick={() => navigate('/login')}>
+                Registered? Login Here
+                </button>
             </form>
         </div>
     );

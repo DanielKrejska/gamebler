@@ -131,9 +131,9 @@ app.post("/login", (req, res) => {
 
         res.json({ token, message: "Login successful." });
 
-        <button onClick={() => navigate('/register')}>
-        Not Registered? Register Here
-        </button>
+        // <button onClick={() => navigate('/register')}>
+        // Not Registered? Register Here
+        // </button>
     });
 });
 
