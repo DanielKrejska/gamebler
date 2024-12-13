@@ -23,6 +23,7 @@ function Register() {
             if (response.ok) {
                 setLogin("");
                 setPassword("");
+                navigate("/login");
             }
         }
         catch (error) {

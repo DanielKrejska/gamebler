@@ -119,6 +119,9 @@ function Home() {
             </div>
             
             <button onClick={handleAddBalance}>Add $100</button>
+            <button onClick={() => navigate("/dicegame", { state: { balance: account.balance } })}>
+                Play Dice Game
+            </button>
             <button onClick={handleLogout}>Logout</button>
         </div>
     );

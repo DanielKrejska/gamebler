@@ -130,10 +130,6 @@ app.post("/login", (req, res) => {
         });
 
         res.json({ token, message: "Login successful." });
-
-        // <button onClick={() => navigate('/register')}>
-        // Not Registered? Register Here
-        // </button>
     });
 });
 
@@ -211,6 +207,79 @@ app.post("/add-balance", authenticateToken, (req, res) => {
         });
     });
 });
+
+// Dice Game
+app.post("/play-dice-game", authenticateToken, (req, res) => {
+    const { login } = req.user;
+    const betAmount = 50;
+
+    const query = "SELECT balance FROM account WHERE login = ?";
+    connection.query(query, [login], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error." });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        let balance = results[0].balance;
+        if (balance < betAmount) {
+            return res.status(400).json({ message: "Insufficient balance." });
+        }
+
+        if (betAmount < 0) {
+            return res.status(400).json({ message: "Invalid bet." });
+        }
+
+        const playerRoll = Math.floor(Math.random() * 6) + 1;
+        const opponentRoll = Math.floor(Math.random() * 6) + 1;
+
+        let message = "";
+        if (playerRoll > opponentRoll) {
+            console.log("pred: balance>>>>" + balance + "\nbetAmount:" + betAmount);
+            balance += balance; // Player wins
+            console.log("po: balance>>>>" + balance + "\nbetAmount:" + betAmount);
+            message = `You win! Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. $50 added to your balance.`;
+        } else if (playerRoll < opponentRoll) {
+            balance -= betAmount; // Player loses
+            message = `You lose. Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. $50 deducted from your balance.`;
+        } else {
+            message = `It's a draw. Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. No change to your balance.`;
+        }
+
+        const updateBalanceQuery = "UPDATE account SET balance = ? WHERE login = ?";
+        connection.query(updateBalanceQuery, [balance, login], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Error updating balance." });
+            }
+
+            res.json({ message, balance });
+        });
+    });
+});
+
+// Get balance
+app.get("/get-balance", authenticateToken, (req, res) => {
+    const { login } = req.user;
+
+    const query = "SELECT balance FROM account WHERE login = ?";
+    connection.query(query, [login], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Server error while fetching balance." });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        res.json({ balance: results[0].balance });
+    });
+});
+
 
 ////////
 //////// LISTEN
