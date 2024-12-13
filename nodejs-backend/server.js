@@ -238,11 +238,7 @@ app.post("/play-dice-game", authenticateToken, (req, res) => {
 
         let message = "";
         if (playerRoll > opponentRoll) {
-            console.log("pred\nbalance:" + balance);
-            console.log("betAmount:" + betAmount);
             balance += Number(betAmount); // Player wins
-            console.log("po\nbalance:" + balance);
-            console.log("betAmount:" + betAmount);
             message = `You win! Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. $50 added to your balance.`;
         } else if (playerRoll < opponentRoll) {
             balance -= Number(betAmount); // Player loses
