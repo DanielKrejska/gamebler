@@ -224,7 +224,7 @@ app.post("/play-dice-game", authenticateToken, (req, res) => {
             return res.status(404).json({ message: "User not found." });
         }
 
-        let balance = results[0].balance;
+        let balance = Number(results[0].balance);
         if (balance < betAmount) {
             return res.status(400).json({ message: "Insufficient balance." });
         }
@@ -238,19 +238,21 @@ app.post("/play-dice-game", authenticateToken, (req, res) => {
 
         let message = "";
         if (playerRoll > opponentRoll) {
-            console.log("pred: balance>>>>" + balance + "\nbetAmount:" + betAmount);
-            balance += balance; // Player wins
-            console.log("po: balance>>>>" + balance + "\nbetAmount:" + betAmount);
+            console.log("pred\nbalance:" + balance);
+            console.log("betAmount:" + betAmount);
+            balance += Number(betAmount); // Player wins
+            console.log("po\nbalance:" + balance);
+            console.log("betAmount:" + betAmount);
             message = `You win! Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. $50 added to your balance.`;
         } else if (playerRoll < opponentRoll) {
-            balance -= betAmount; // Player loses
+            balance -= Number(betAmount); // Player loses
             message = `You lose. Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. $50 deducted from your balance.`;
         } else {
             message = `It's a draw. Your roll: ${playerRoll}, Opponent's roll: ${opponentRoll}. No change to your balance.`;
         }
 
         const updateBalanceQuery = "UPDATE account SET balance = ? WHERE login = ?";
-        connection.query(updateBalanceQuery, [balance, login], (err, results) => {
+        connection.query(updateBalanceQuery, [Number(balance), login], (err, results) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ message: "Error updating balance." });

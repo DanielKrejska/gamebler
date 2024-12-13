@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 
 function DiceGame() {
-    const location = useLocation();
     const [message, setMessage] = useState("");
-    const [balance, setBalance] = useState(Math.round(location.state?.balance) || 0);
+    const [balance, setBalance] = useState(0);
     const navigate = useNavigate();
 
     const getBalance = async () => {
@@ -23,7 +21,7 @@ function DiceGame() {
             if (!response.ok) {
                 setMessage(data.message);
             } else {
-                setBalance(Math.round(data.account.balance));
+                setBalance(data.account.balance);
             }
         } catch (error) {
             console.error("Error fetching balance:", error);
